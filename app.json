@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "AI Mustache Generator",
+    "slug": "mustache-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0d0d0d"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.spectrumlabs.mustacheapp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used to capture selfies for AI mustache generation.",
+        "NSPhotoLibraryUsageDescription": "Used to select photos from your gallery for mustache generation.",
+        "NSPhotoLibraryAddUsageDescription": "Used to save your mustache photo to your camera roll."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0d0d0d"
+      },
+      "package": "com.spectrumlabs.mustacheapp",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "apiUrl": "http://localhost:8000"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow AI Mustache Generator to access your camera for selfies."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow AI Mustache Generator to access your photos for mustache generation."
+        }
+      ],
+      "expo-media-library"
+    ]
+  }
+}
