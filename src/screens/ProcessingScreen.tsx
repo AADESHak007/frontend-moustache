@@ -94,7 +94,7 @@ export default function ProcessingScreen() {
   };
 
   return (
-    <LinearGradient colors={['#0d0d0d', '#130a1e', '#0d0d0d']} style={styles.gradient}>
+    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
       <SafeAreaView style={styles.safe}>
 
         {errorMessage ? (
@@ -150,25 +150,30 @@ const styles = StyleSheet.create({
   headline: {
     fontSize:      30,
     fontWeight:    '800',
-    color:         '#ffffff',
+    color:         '#1a1a2e',
     textAlign:     'center',
     letterSpacing: -0.5,
     marginTop:     32,
     marginBottom:  24,
   },
   msgBox: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#ffffff',
     borderRadius:    14,
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderWidth:     1,
-    borderColor:     '#2a2a2a',
+    borderColor:     '#ede9fe',
     marginBottom:    28,
     minWidth:        260,
     alignItems:      'center',
+    shadowColor:     '#7c3aed',
+    shadowOffset:    { width: 0, height: 4 },
+    shadowOpacity:   0.08,
+    shadowRadius:    12,
+    elevation:       3,
   },
   statusMsg: {
-    color:      '#d1d5db',
+    color:      '#374151',
     fontSize:   15,
     fontWeight: '500',
     textAlign:  'center',
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   jobId: {
-    color:        '#374151',
+    color:        '#9ca3af',
     fontSize:     11,
     fontFamily:   'monospace',
     marginTop:    20,
@@ -191,11 +196,11 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize:     24,
     fontWeight:   '800',
-    color:        '#ffffff',
+    color:        '#1a1a2e',
     marginBottom: 12,
   },
   errorMsg: {
-    color:        '#9ca3af',
+    color:        '#6b7280',
     fontSize:     15,
     textAlign:    'center',
     lineHeight:   22,

@@ -25,13 +25,13 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="Home"
             screenOptions={{
               headerShown: false,
-              cardStyle:   { backgroundColor: '#0d0d0d' },
+              cardStyle:   { backgroundColor: '#f6f4ff' },
               // Smooth slide transition
               cardStyleInterpolator: ({ current, layouts }) => ({
                 cardStyle: {

@@ -14,6 +14,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -76,7 +77,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <LinearGradient colors={['#0d0d0d', '#130a1e', '#0d0d0d']} style={styles.gradient}>
+    <LinearGradient colors={['#ffffff', '#f8fafc', '#f1f5f9']} style={styles.gradient}>
       <SafeAreaView style={styles.safe}>
         <ScrollView
           contentContainerStyle={styles.scroll}
@@ -89,11 +90,12 @@ export default function HomeScreen() {
               { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
             ]}
           >
-            <Animated.Text
-              style={[styles.emoji, { transform: [{ translateY: emojiAnim }] }]}
-            >
-              🥸
-            </Animated.Text>
+            <Animated.View style={[styles.logoWrapper, { transform: [{ translateY: emojiAnim }] }]}>
+              <Image
+                source={require('../components/logo/logo.jpeg')}
+                style={styles.logoImage}
+              />
+            </Animated.View>
             <Text style={styles.title}>AI Mustache</Text>
             <Text style={styles.titleAccent}>Generator</Text>
             <Text style={styles.tagline}>
@@ -156,33 +158,49 @@ const styles = StyleSheet.create({
   safe:        { flex: 1 },
   scroll: {
     paddingHorizontal: 24,
-    paddingVertical:   36,
+    paddingVertical:   40,
     alignItems:        'center',
   },
   hero: {
     alignItems:   'center',
-    marginBottom: 40,
+    marginBottom: 48,
   },
-  emoji: {
-    fontSize:     76,
-    marginBottom: 10,
+  logoWrapper: {
+    width:        88,
+    height:       88,
+    borderRadius: 22,
+    overflow:     'hidden',
+    justifyContent: 'center',
+    alignItems:   'center',
+    marginBottom: 16,
+    backgroundColor: '#ffffff',
+    shadowColor:  '#5b21b6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation:    4,
+  },
+  logoImage: {
+    width:  125, // Specifically sized up to trim the white edges of the jpg
+    height: 125,
   },
   title: {
-    fontSize:      44,
-    fontWeight:    '800',
-    color:         '#ffffff',
-    letterSpacing: -1.5,
+    fontSize:      42,
+    fontWeight:    '900',
+    color:         '#0f172a',
+    letterSpacing: -1,
   },
   titleAccent: {
-    fontSize:      44,
-    fontWeight:    '800',
-    color:         '#a855f7',
-    letterSpacing: -1.5,
-    marginTop:     -6,
+    fontSize:      42,
+    fontWeight:    '900',
+    color:         '#5b21b6',
+    letterSpacing: -1,
+    marginTop:     -4,
   },
   tagline: {
     fontSize:   16,
-    color:      '#9ca3af',
+    fontWeight: '400',
+    color:      '#64748b',
     textAlign:  'center',
     marginTop:  16,
     lineHeight: 24,
@@ -192,11 +210,12 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionLabel: {
-    fontSize:     16,
+    fontSize:     13,
     fontWeight:   '700',
-    color:        '#e5e7eb',
-    marginBottom: 14,
-    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+    color:        '#94a3b8',
+    marginBottom: 16,
+    letterSpacing: 1.2,
   },
   chipsGrid: {
     flexDirection: 'row',
@@ -204,50 +223,62 @@ const styles = StyleSheet.create({
     gap:           10,
   },
   chip: {
-    borderWidth:      1.5,
-    borderRadius:     24,
-    paddingHorizontal: 14,
-    paddingVertical:   8,
+    borderWidth:       0, // Set to 0 to override any inline colors and keep it clean
+    borderRadius:      12,
+    paddingHorizontal: 16,
+    paddingVertical:   10,
+    backgroundColor:   '#ffffff',
+    shadowColor:       '#000',
+    shadowOffset:      { width: 0, height: 2 },
+    shadowOpacity:     0.04,
+    shadowRadius:      4,
+    elevation:         2,
   },
   chipText: {
-    color:      '#e5e7eb',
+    color:      '#334155',
     fontSize:   14,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   featureCard: {
-    width:         '100%',
-    backgroundColor: '#161616',
-    borderRadius:   18,
-    padding:        20,
-    marginBottom:   32,
-    borderWidth:    1,
-    borderColor:    '#2a2a2a',
+    width:           '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    borderRadius:    24,
+    padding:         24,
+    marginBottom:    36,
+    borderWidth:     1,
+    borderColor:     'rgba(255, 255, 255, 0.9)',
+    shadowColor:     '#4f46e5',
+    shadowOffset:    { width: 0, height: 12 },
+    shadowOpacity:   0.06,
+    shadowRadius:    24,
+    elevation:       4,
   },
   featureRow: {
     flexDirection:  'row',
     alignItems:     'center',
-    marginBottom:   14,
+    marginBottom:   16,
   },
   featureIcon: {
     fontSize:    20,
-    marginRight: 14,
+    marginRight: 16,
     width:       28,
     textAlign:   'center',
+    opacity:     0.9,
   },
   featureText: {
-    color:      '#d1d5db',
+    color:      '#475569',
     fontSize:   15,
     fontWeight: '500',
     flex:       1,
   },
   cta: {
-    borderRadius:  18,
+    borderRadius:  20,
     overflow:      'hidden',
-    shadowColor:   '#a855f7',
-    shadowOffset:  { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius:  20,
-    elevation:     10,
+    shadowColor:   '#5b21b6',
+    shadowOffset:  { width: 0, height: 12 },
+    shadowOpacity: 0.2,
+    shadowRadius:  24,
+    elevation:     8,
     marginBottom:  32,
   },
   ctaGradient: {
@@ -258,11 +289,11 @@ const styles = StyleSheet.create({
   ctaText: {
     color:         '#ffffff',
     fontSize:      18,
-    fontWeight:    '800',
-    letterSpacing: 0.5,
+    fontWeight:    '700',
+    letterSpacing: 0.3,
   },
   footer: {
-    color:    '#4b5563',
+    color:    '#cbd5e1',
     fontSize: 12,
   },
 });

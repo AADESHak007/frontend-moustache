@@ -87,7 +87,7 @@ export default function UploadScreen() {
   };
 
   return (
-    <LinearGradient colors={['#0d0d0d', '#130a1e', '#0d0d0d']} style={styles.gradient}>
+    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
       <SafeAreaView style={styles.safe}>
 
         {/* Header */}
@@ -179,18 +179,18 @@ const styles = StyleSheet.create({
     marginBottom:   24,
   },
   backBtn:   { padding: 4 },
-  backText:  { color: '#9ca3af', fontSize: 15, fontWeight: '500' },
-  stepLabel: { color: '#6b7280', fontSize: 13, fontWeight: '600' },
+  backText:  { color: '#6b7280', fontSize: 15, fontWeight: '500' },
+  stepLabel: { color: '#9ca3af', fontSize: 13, fontWeight: '600' },
   title: {
     fontSize:      28,
     fontWeight:    '800',
-    color:         '#ffffff',
+    color:         '#1a1a2e',
     letterSpacing: -0.5,
     marginBottom:  6,
   },
   subtitle: {
     fontSize:     15,
-    color:        '#9ca3af',
+    color:        '#6b7280',
     marginBottom: 28,
   },
   previewContainer: {
@@ -209,14 +209,14 @@ const styles = StyleSheet.create({
     height:          PREVIEW_SIZE,
     borderRadius:    PREVIEW_SIZE / 2,
     borderWidth:     2,
-    borderColor:     '#2a2a2a',
+    borderColor:     '#c4b5fd',
     borderStyle:     'dashed',
-    backgroundColor: '#161616',
+    backgroundColor: '#f3f0ff',
     alignItems:      'center',
     justifyContent:  'center',
   },
   placeholderEmoji: { fontSize: 52, marginBottom: 10 },
-  placeholderText:  { color: '#4b5563', fontSize: 14 },
+  placeholderText:  { color: '#9ca3af', fontSize: 14 },
   buttonGroup: {
     flexDirection: 'row',
     gap:           14,
@@ -227,21 +227,21 @@ const styles = StyleSheet.create({
     borderRadius:    16,
     padding:         18,
     alignItems:      'center',
-    borderWidth:     1,
+    borderWidth:     1.5,
   },
   cameraBtn: {
-    backgroundColor: '#1a0a2e',
+    backgroundColor: '#f3f0ff',
     borderColor:     '#7c3aed',
   },
   galleryBtn: {
-    backgroundColor: '#0a1a0a',
+    backgroundColor: '#f0fdf4',
     borderColor:     '#059669',
   },
   optionIcon:  { fontSize: 28, marginBottom: 6 },
-  optionLabel: { color: '#ffffff', fontSize: 14, fontWeight: '700', marginBottom: 2 },
-  optionSub:   { color: '#6b7280', fontSize: 12 },
+  optionLabel: { color: '#1a1a2e', fontSize: 14, fontWeight: '700', marginBottom: 2 },
+  optionSub:   { color: '#9ca3af', fontSize: 12 },
   hint: {
-    color:        '#4b5563',
+    color:        '#9ca3af',
     fontSize:     12,
     textAlign:    'center',
     marginBottom: 24,
@@ -249,9 +249,9 @@ const styles = StyleSheet.create({
   nextBtn: {
     borderRadius:  16,
     overflow:      'hidden',
-    shadowColor:   '#a855f7',
+    shadowColor:   '#7c3aed',
     shadowOffset:  { width: 0, height: 8 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.3,
     shadowRadius:  16,
     elevation:     8,
   },
