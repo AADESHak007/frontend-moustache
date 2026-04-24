@@ -74,7 +74,7 @@ export default function StylePickerScreen() {
   };
 
   return (
-    <LinearGradient colors={['#0d0d0d', '#130a1e', '#0d0d0d']} style={vStyles.gradient}>
+    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={vStyles.gradient}>
       <SafeAreaView style={vStyles.safe}>
 
         {/* Header */}
@@ -138,7 +138,7 @@ export default function StylePickerScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <LinearGradient
-              colors={selectedStyle ? ['#9333ea', '#7c3aed'] : ['#2a2a2a', '#1a1a1a']}
+              colors={selectedStyle ? ['#9333ea', '#7c3aed'] : ['#e5e7eb', '#d1d5db']}
               style={vStyles.generateGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
@@ -166,18 +166,18 @@ const vStyles = StyleSheet.create({
     marginBottom:   20,
   },
   backBtn:   { padding: 4 },
-  backText:  { color: '#9ca3af', fontSize: 15, fontWeight: '500' },
-  stepLabel: { color: '#6b7280', fontSize: 13, fontWeight: '600' },
+  backText:  { color: '#6b7280', fontSize: 15, fontWeight: '500' },
+  stepLabel: { color: '#9ca3af', fontSize: 13, fontWeight: '600' },
   title: {
     fontSize:      26,
     fontWeight:    '800',
-    color:         '#ffffff',
+    color:         '#1a1a2e',
     letterSpacing: -0.5,
     marginBottom:  6,
   },
   subtitle: {
     fontSize:     14,
-    color:        '#a855f7',
+    color:        '#9333ea',
     fontWeight:   '600',
     marginBottom: 16,
   },
@@ -192,22 +192,22 @@ const vStyles = StyleSheet.create({
   row:  { justifyContent: 'space-between', marginBottom: 14 },
   grid: { paddingBottom: 16 },
   errorBox: {
-    backgroundColor: '#1a0808',
+    backgroundColor: '#fff5f5',
     borderRadius:    12,
     padding:         16,
     marginTop:       24,
     borderWidth:     1,
-    borderColor:     '#7f1d1d',
+    borderColor:     '#fecaca',
   },
-  errorText:   { color: '#fca5a5', fontSize: 14, textAlign: 'center' },
-  submitError: { color: '#fca5a5', fontSize: 13, textAlign: 'center', marginBottom: 12 },
+  errorText:   { color: '#dc2626', fontSize: 14, textAlign: 'center' },
+  submitError: { color: '#dc2626', fontSize: 13, textAlign: 'center', marginBottom: 12 },
   generateBtn: {
     borderRadius: 16,
     overflow:     'hidden',
     marginTop:    10,
-    shadowColor:  '#a855f7',
+    shadowColor:  '#7c3aed',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation:    8,
   },

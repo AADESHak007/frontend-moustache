@@ -28,16 +28,16 @@ const CARD_W    = (width - 54) / 2;  // 2 columns with gaps
 
 // Emoji and color map per style ID
 const STYLE_META: Record<string, { emoji: string; color: string; gradient: [string, string] }> = {
-  chevron:   { emoji: '👨',  color: '#7c3aed', gradient: ['#1a0a2e', '#2d1458'] },
-  handlebar: { emoji: '🎩',  color: '#0891b2', gradient: ['#0a1a2e', '#0c2a40'] },
-  fu_manchu: { emoji: '🥷',  color: '#dc2626', gradient: ['#2e0a0a', '#4a1010'] },
-  pencil:    { emoji: '✏️',  color: '#059669', gradient: ['#0a1a10', '#0f2a18'] },
-  walrus:    { emoji: '🦭',  color: '#d97706', gradient: ['#1a1000', '#2a1a00'] },
-  english:   { emoji: '🎭',  color: '#db2777', gradient: ['#2e0a18', '#4a1028'] },
+  chevron:   { emoji: '👨',  color: '#7c3aed', gradient: ['#f3f0ff', '#ede9fe'] },
+  handlebar: { emoji: '🎩',  color: '#0891b2', gradient: ['#f0f9ff', '#e0f2fe'] },
+  fu_manchu: { emoji: '🥷',  color: '#dc2626', gradient: ['#fff5f5', '#fee2e2'] },
+  pencil:    { emoji: '✏️',  color: '#059669', gradient: ['#f0fdf4', '#dcfce7'] },
+  walrus:    { emoji: '🦭',  color: '#d97706', gradient: ['#fffbeb', '#fef3c7'] },
+  english:   { emoji: '🎭',  color: '#db2777', gradient: ['#fdf2f8', '#fce7f3'] },
 };
 
 export default function StyleCard({ style, selected, onSelect }: StyleCardProps) {
-  const meta    = STYLE_META[style.id] ?? { emoji: '🥸', color: '#7c3aed', gradient: ['#1a1a1a', '#2a2a2a'] };
+  const meta    = STYLE_META[style.id] ?? { emoji: '🥸', color: '#7c3aed', gradient: ['#f6f4ff', '#ede9fe'] };
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -90,12 +90,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     overflow:     'hidden',
     borderWidth:  1.5,
-    borderColor:  '#2a2a2a',
-    shadowColor:  '#000',
+    borderColor:  '#ede9fe',
+    backgroundColor: '#ffffff',
+    shadowColor:  '#7c3aed',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation:    6,
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation:    3,
   },
   gradient: {
     paddingVertical:   28,
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize:      14,
     fontWeight:    '700',
-    color:         '#e5e7eb',
+    color:         '#374151',
     textAlign:     'center',
     letterSpacing: 0.2,
   },

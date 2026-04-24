@@ -18,9 +18,9 @@ export default function LoadingAnimation() {
     // Outer ring — slow clockwise
     Animated.loop(
       Animated.timing(spin1, {
-        toValue:        1,
-        duration:       2800,
-        easing:         Easing.linear,
+        toValue: 1,
+        duration: 2800,
+        easing: Easing.linear,
         useNativeDriver: true,
       })
     ).start();
@@ -28,9 +28,9 @@ export default function LoadingAnimation() {
     // Middle ring — medium counter-clockwise
     Animated.loop(
       Animated.timing(spin2, {
-        toValue:        -1,
-        duration:       2000,
-        easing:         Easing.linear,
+        toValue: -1,
+        duration: 2000,
+        easing: Easing.linear,
         useNativeDriver: true,
       })
     ).start();
@@ -38,9 +38,9 @@ export default function LoadingAnimation() {
     // Inner ring — fast clockwise
     Animated.loop(
       Animated.timing(spin3, {
-        toValue:        1,
-        duration:       1200,
-        easing:         Easing.linear,
+        toValue: 1,
+        duration: 1200,
+        easing: Easing.linear,
         useNativeDriver: true,
       })
     ).start();
@@ -49,7 +49,7 @@ export default function LoadingAnimation() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseScale, { toValue: 1.15, duration: 700, useNativeDriver: true }),
-        Animated.timing(pulseScale, { toValue: 0.9,  duration: 700, useNativeDriver: true }),
+        Animated.timing(pulseScale, { toValue: 0.9, duration: 700, useNativeDriver: true }),
       ])
     ).start();
   }, []);
@@ -84,39 +84,39 @@ export default function LoadingAnimation() {
 
 const styles = StyleSheet.create({
   container: {
-    width:          140,
-    height:         140,
-    alignItems:     'center',
+    width: 140,
+    height: 140,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   ring: {
-    position:     'absolute',
+    position: 'absolute',
     borderRadius: 9999,
-    borderStyle:  'solid',
+    borderStyle: 'solid',
   },
   ring1: {
-    width:       140,
-    height:      140,
+    width: 140,
+    height: 140,
     borderWidth: 3,
     borderColor: '#7c3aed',
     borderTopColor: 'transparent',
   },
   ring2: {
-    width:       104,
-    height:      104,
+    width: 104,
+    height: 104,
     borderWidth: 3,
     borderColor: '#a855f7',
     borderRightColor: 'transparent',
   },
   ring3: {
-    width:       72,
-    height:      72,
+    width: 72,
+    height: 72,
     borderWidth: 3,
     borderColor: '#c084fc',
     borderBottomColor: 'transparent',
   },
   emoji: {
-    fontSize:  32,
+    fontSize: 32,
     textAlign: 'center',
   },
 });

@@ -94,7 +94,7 @@ export default function ResultScreen() {
   if (!outputUrl) {
     // Shouldn't normally happen, but handle gracefully
     return (
-      <LinearGradient colors={['#0d0d0d', '#130a1e', '#0d0d0d']} style={styles.gradient}>
+      <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
         <SafeAreaView style={styles.safe}>
           <View style={styles.center}>
             <Text style={styles.errorEmoji}>😕</Text>
@@ -109,7 +109,7 @@ export default function ResultScreen() {
   }
 
   return (
-    <LinearGradient colors={['#0d0d0d', '#130a1e', '#0d0d0d']} style={styles.gradient}>
+    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
       <SafeAreaView style={styles.safe}>
 
         {/* Header */}
@@ -204,18 +204,18 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize:      22,
     fontWeight:    '800',
-    color:         '#ffffff',
+    color:         '#1a1a2e',
     letterSpacing: -0.3,
   },
   styleBadge: {
-    backgroundColor: '#1a0a2e',
+    backgroundColor: '#f3f0ff',
     borderRadius:    12,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderWidth:     1,
-    borderColor:     '#7c3aed',
+    borderColor:     '#c4b5fd',
   },
-  styleBadgeText: { color: '#c4b5fd', fontSize: 13, fontWeight: '600' },
+  styleBadgeText: { color: '#7c3aed', fontSize: 13, fontWeight: '600' },
   imageContainer: {
     alignItems:   'center',
     marginBottom: 24,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     overflow:     'hidden',
     shadowColor:  '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation:    6,
   },
@@ -259,14 +259,14 @@ const styles = StyleSheet.create({
   actionIcon:  { fontSize: 22, marginBottom: 4 },
   actionLabel: { color: '#ffffff', fontSize: 13, fontWeight: '700' },
   privacyNote: {
-    color:      '#4b5563',
+    color:      '#9ca3af',
     fontSize:   12,
     textAlign:  'center',
     marginTop:  4,
   },
   // Error fallback
   errorEmoji:  { fontSize: 64, marginBottom: 16 },
-  errorTitle:  { fontSize: 22, fontWeight: '800', color: '#ffffff', marginBottom: 24 },
+  errorTitle:  { fontSize: 22, fontWeight: '800', color: '#1a1a2e', marginBottom: 24 },
   retryBtn:    { backgroundColor: '#7c3aed', borderRadius: 14, padding: 16 },
   retryText:   { color: '#fff', fontSize: 16, fontWeight: '800' },
 });
