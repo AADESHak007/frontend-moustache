@@ -15,14 +15,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { RootStackParamList } from '../types';
 import { useAppStore } from '../store/useAppStore';
@@ -36,6 +37,14 @@ export default function ResultScreen() {
   const currentJob   = useAppStore((s) => s.currentJob);
   const resetSession = useAppStore((s) => s.resetSession);
   const selectedStyle = useAppStore((s) => s.selectedStyle);
+  const token         = useAppStore((s) => s.token);
+
+  // Auth Guard
+  React.useEffect(() => {
+    if (!token) {
+      navigation.replace('SignIn');
+    }
+  }, [token]);
 
   const outputUrl = currentJob?.output_url ?? null;
 
@@ -91,26 +100,36 @@ export default function ResultScreen() {
     navigation.popToTop();
   };
 
+  const insets = useSafeAreaInsets();
+
   if (!outputUrl) {
     // Shouldn't normally happen, but handle gracefully
     return (
-      <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
-        <SafeAreaView style={styles.safe}>
-          <View style={styles.center}>
+      <View style={styles.container}>
+        <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={StyleSheet.absoluteFill} />
+        <View style={[styles.main, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+          <ScrollView contentContainerStyle={styles.center} bounces={true}>
             <Text style={styles.errorEmoji}>😕</Text>
             <Text style={styles.errorTitle}>No result available</Text>
             <TouchableOpacity style={styles.retryBtn} onPress={_onRetry}>
               <Text style={styles.retryText}>Start Over</Text>
             </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
+          </ScrollView>
+        </View>
+      </View>
     );
   }
 
   return (
-    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
-      <SafeAreaView style={styles.safe}>
+    <View style={styles.container}>
+      <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={StyleSheet.absoluteFill} />
+      <View style={[styles.main, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+        >
+          <View style={styles.contentInner}>
 
         {/* Header */}
         <View style={styles.header}>
@@ -181,24 +200,29 @@ export default function ResultScreen() {
           🔒 This image will be automatically deleted in 24 hours
         </Text>
 
-      </SafeAreaView>
-    </LinearGradient>
+          </View>
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const IMG_SIZE = width - 48;
 
 const styles = StyleSheet.create({
-  gradient: { flex: 1 },
-  safe:     { flex: 1, paddingHorizontal: 24 },
+  container: { flex: 1, backgroundColor: '#ffffff' },
+  main: { flex: 1 },
+  scrollContent: { flexGrow: 1, paddingVertical: 20 },
+  contentInner: { paddingHorizontal: 24, width: '100%', alignItems: 'center' },
   center: {
-    flex: 1, alignItems: 'center', justifyContent: 'center',
+    flexGrow: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24,
   },
   header: {
     flexDirection:  'row',
     justifyContent: 'space-between',
     alignItems:     'center',
     paddingTop:     12,
+    width: '100%',
     marginBottom:   16,
   },
   headerTitle: {
@@ -239,6 +263,7 @@ const styles = StyleSheet.create({
   successText: { color: '#ffffff', fontSize: 12, fontWeight: '700' },
   actions: {
     flexDirection:  'row',
+    width: '100%',
     gap:            12,
     marginBottom:   16,
   },

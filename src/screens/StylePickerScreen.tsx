@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -40,12 +40,19 @@ export default function StylePickerScreen() {
   const selectedStyle   = useAppStore((s) => s.selectedStyle);
   const setSelectedStyle = useAppStore((s) => s.setSelectedStyle);
   const selectedImageUri = useAppStore((s) => s.selectedImageUri);
-  const userId           = useAppStore((s) => s.userId);
+  const token            = useAppStore((s) => s.token);
   const setCurrentJob    = useAppStore((s) => s.setCurrentJob);
 
   const [loading,      setLoading]      = useState(false);
   const [submitting,   setSubmitting]   = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Auth Guard
+  useEffect(() => {
+    if (!token) {
+      navigation.replace('SignIn');
+    }
+  }, [token]);
 
   // Fetch styles on mount (backend caches for 5min)
   useEffect(() => {
@@ -63,7 +70,7 @@ export default function StylePickerScreen() {
     setSubmitting(true);
     setErrorMessage(null);
     try {
-      const job = await createJob(selectedImageUri, selectedStyle.id, userId);
+      const job = await createJob(selectedImageUri, selectedStyle.id);
       setCurrentJob({ job_id: job.job_id, status: job.status });
       navigation.navigate('Processing');
     } catch (err: any) {
@@ -73,9 +80,12 @@ export default function StylePickerScreen() {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={vStyles.gradient}>
-      <SafeAreaView style={vStyles.safe}>
+    <View style={vStyles.container}>
+      <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={StyleSheet.absoluteFill} />
+      <View style={[vStyles.main, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
 
         {/* Header */}
         <View style={vStyles.header}>
@@ -105,21 +115,23 @@ export default function StylePickerScreen() {
             <Text style={vStyles.errorText}>{errorMessage}</Text>
           </View>
         ) : (
-          <FlatList
-            data={styles_list}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            columnWrapperStyle={vStyles.row}
-            contentContainerStyle={vStyles.grid}
-            renderItem={({ item }) => (
-              <StyleCard
-                style={item}
-                selected={selectedStyle?.id === item.id}
-                onSelect={() => setSelectedStyle(item)}
-              />
-            )}
-            showsVerticalScrollIndicator={false}
-          />
+          <View style={vStyles.listWrapper}>
+            <FlatList
+              data={styles_list}
+              keyExtractor={(item) => item.id}
+              numColumns={2}
+              columnWrapperStyle={vStyles.row}
+              contentContainerStyle={vStyles.grid}
+              renderItem={({ item }) => (
+                <StyleCard
+                  style={item}
+                  selected={selectedStyle?.id === item.id}
+                  onSelect={() => setSelectedStyle(item)}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
         )}
 
         {/* Error from submission */}
@@ -150,14 +162,14 @@ export default function StylePickerScreen() {
           )}
         </TouchableOpacity>
 
-      </SafeAreaView>
-    </LinearGradient>
+      </View>
+    </View>
   );
 }
 
 const vStyles = StyleSheet.create({
-  gradient: { flex: 1 },
-  safe:     { flex: 1, paddingHorizontal: 20 },
+  container: { flex: 1, backgroundColor: '#ffffff' },
+  main: { flex: 1, paddingHorizontal: 20 },
   header: {
     flexDirection:  'row',
     justifyContent: 'space-between',
@@ -190,6 +202,7 @@ const vStyles = StyleSheet.create({
     marginBottom: 16,
   },
   row:  { justifyContent: 'space-between', marginBottom: 14 },
+  listWrapper: { flex: 1 },
   grid: { paddingBottom: 16 },
   errorBox: {
     backgroundColor: '#fff5f5',

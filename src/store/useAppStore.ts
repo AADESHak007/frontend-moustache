@@ -10,16 +10,20 @@
  */
 
 import { create } from 'zustand';
-import { Style, Job } from '../types';
-
-// Generate a random anonymous user ID for this session
-const _generateUserId = (): string =>
-  `user_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Style, Job, UserProfile } from '../types';
 
 // ---------------------------------------------------------------------------
 // Store shape
 // ---------------------------------------------------------------------------
 interface AppState {
+  // Auth
+  token: string | null;
+  user:  UserProfile | null;
+  setAuth: (token: string, user: UserProfile) => void;
+  logout:  () => void;
+
   // Image
   selectedImageUri: string | null;
   setSelectedImageUri: (uri: string | null) => void;
@@ -35,9 +39,6 @@ interface AppState {
   setCurrentJob:   (job: Job | null) => void;
   updateJob:       (updates: Partial<Job>) => void;
 
-  // User
-  userId: string;
-
   // Reset session (after result or on retry)
   resetSession: () => void;
 }
@@ -45,33 +46,49 @@ interface AppState {
 // ---------------------------------------------------------------------------
 // Store implementation
 // ---------------------------------------------------------------------------
-export const useAppStore = create<AppState>((set) => ({
-  // Image
-  selectedImageUri:    null,
-  setSelectedImageUri: (uri) => set({ selectedImageUri: uri }),
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      // Auth
+      token: null,
+      user:  null,
+      setAuth: (token, user) => set({ token, user }),
+      logout:  () => set({ token: null, user: null }),
 
-  // Styles
-  styles:           [],
-  selectedStyle:    null,
-  setStyles:        (styles) => set({ styles }),
-  setSelectedStyle: (style)  => set({ selectedStyle: style }),
+      // Image
+      selectedImageUri:    null,
+      setSelectedImageUri: (uri) => set({ selectedImageUri: uri }),
 
-  // Job
-  currentJob:    null,
-  setCurrentJob: (job) => set({ currentJob: job }),
-  updateJob:     (updates) =>
-    set((state) => ({
-      currentJob: state.currentJob ? { ...state.currentJob, ...updates } : null,
-    })),
-
-  // Anonymous user ID — generated once per app session
-  userId: _generateUserId(),
-
-  // Reset everything except userId and styles (they persist across sessions)
-  resetSession: () =>
-    set({
-      selectedImageUri: null,
+      // Styles
+      styles:           [],
       selectedStyle:    null,
-      currentJob:       null,
+      setStyles:        (styles) => set({ styles }),
+      setSelectedStyle: (style)  => set({ selectedStyle: style }),
+
+      // Job
+      currentJob:    null,
+      setCurrentJob: (job) => set({ currentJob: job }),
+      updateJob:     (updates) =>
+        set((state) => ({
+          currentJob: state.currentJob ? { ...state.currentJob, ...updates } : null,
+        })),
+
+      // Reset everything except auth and styles
+      resetSession: () =>
+        set({
+          selectedImageUri: null,
+          selectedStyle:    null,
+          currentJob:       null,
+        }),
     }),
-}));
+    {
+      name: 'mustache-app-storage',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({
+        token:  state.token,
+        user:   state.user,
+        styles: state.styles,
+      }),
+    }
+  )
+);

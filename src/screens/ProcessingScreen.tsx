@@ -14,8 +14,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -43,9 +44,17 @@ export default function ProcessingScreen() {
   const currentJob   = useAppStore((s) => s.currentJob);
   const updateJob    = useAppStore((s) => s.updateJob);
   const resetSession = useAppStore((s) => s.resetSession);
+  const token        = useAppStore((s) => s.token);
 
   const [msgIndex,     setMsgIndex]    = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Auth Guard
+  useEffect(() => {
+    if (!token) {
+      navigation.replace('SignIn');
+    }
+  }, [token]);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -93,9 +102,18 @@ export default function ProcessingScreen() {
     navigation.popToTop();
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
-      <SafeAreaView style={styles.safe}>
+    <View style={styles.container}>
+      <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={StyleSheet.absoluteFill} />
+      
+      <View style={[styles.main, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+        >
 
         {errorMessage ? (
           /* ── Error state ── */
@@ -133,14 +151,16 @@ export default function ProcessingScreen() {
           </View>
         )}
 
-      </SafeAreaView>
-    </LinearGradient>
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: { flex: 1 },
-  safe:     { flex: 1 },
+  container: { flex: 1, backgroundColor: '#ffffff' },
+  main: { flex: 1 },
+  scrollContent: { flexGrow: 1 },
   center: {
     flex:           1,
     alignItems:     'center',

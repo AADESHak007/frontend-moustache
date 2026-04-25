@@ -32,10 +32,29 @@ export interface StylesResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+export interface UserProfile {
+  id:         string;
+  email:      string;
+  created_at?: string;
+}
+
+export interface AuthResponse {
+  access_token:  string;
+  token_type:    string;
+  expires_in:    number;
+  refresh_token: string;
+  user:          UserProfile;
+}
+
+// ---------------------------------------------------------------------------
 // Navigation
 // ---------------------------------------------------------------------------
 export type RootStackParamList = {
   Home:         undefined;
+  SignIn:       undefined;
+  SignUp:       undefined;
   Upload:       undefined;
   StylePicker:  undefined;
   Processing:   undefined;

@@ -14,8 +14,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -32,8 +33,16 @@ export default function UploadScreen() {
   const navigation         = useNavigation<UploadNav>();
   const setSelectedImageUri = useAppStore((s) => s.setSelectedImageUri);
   const selectedImageUri    = useAppStore((s) => s.selectedImageUri);
+  const token               = useAppStore((s) => s.token);
 
   const [loading, setLoading] = useState(false);
+
+  // Auth Guard
+  React.useEffect(() => {
+    if (!token) {
+      navigation.replace('SignIn');
+    }
+  }, [token]);
 
   const _pickFromGallery = async () => {
     setLoading(true);
@@ -86,9 +95,19 @@ export default function UploadScreen() {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={styles.gradient}>
-      <SafeAreaView style={styles.safe}>
+    <View style={styles.container}>
+      <LinearGradient colors={['#f6f4ff', '#fdf4ff', '#f6f4ff']} style={StyleSheet.absoluteFill} />
+      
+      <View style={[styles.main, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+        >
+          <View style={styles.contentInner}>
 
         {/* Header */}
         <View style={styles.header}>
@@ -161,24 +180,36 @@ export default function UploadScreen() {
           </TouchableOpacity>
         )}
 
-      </SafeAreaView>
-    </LinearGradient>
+          </View>
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const PREVIEW_SIZE = 260;
 
 const styles = StyleSheet.create({
-  gradient: { flex: 1 },
-  safe:     { flex: 1, paddingHorizontal: 24 },
+  container: { flex: 1, backgroundColor: '#ffffff' },
+  main: { flex: 1 },
+  scrollContent: {
+    flexGrow: 1,
+    paddingVertical: 20,
+  },
+  contentInner: {
+    paddingHorizontal: 24,
+    width: '100%',
+    alignItems: 'center',
+  },
   header: {
     flexDirection:  'row',
     justifyContent: 'space-between',
     alignItems:     'center',
     paddingTop:     12,
+    width: '100%',
     marginBottom:   24,
   },
-  backBtn:   { padding: 4 },
+  backBtn:   { padding: 4, alignSelf: 'flex-start' },
   backText:  { color: '#6b7280', fontSize: 15, fontWeight: '500' },
   stepLabel: { color: '#9ca3af', fontSize: 13, fontWeight: '600' },
   title: {
@@ -186,11 +217,13 @@ const styles = StyleSheet.create({
     fontWeight:    '800',
     color:         '#1a1a2e',
     letterSpacing: -0.5,
+    alignSelf: 'flex-start',
     marginBottom:  6,
   },
   subtitle: {
     fontSize:     15,
     color:        '#6b7280',
+    alignSelf: 'flex-start',
     marginBottom: 28,
   },
   previewContainer: {
@@ -219,6 +252,7 @@ const styles = StyleSheet.create({
   placeholderText:  { color: '#9ca3af', fontSize: 14 },
   buttonGroup: {
     flexDirection: 'row',
+    width: '100%',
     gap:           14,
     marginBottom:  20,
   },
@@ -247,6 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   nextBtn: {
+    width: '100%',
     borderRadius:  16,
     overflow:      'hidden',
     shadowColor:   '#7c3aed',

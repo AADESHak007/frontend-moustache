@@ -17,12 +17,10 @@ export interface CreateJobResponse {
  *
  * @param imageUri  Local file URI from Expo ImagePicker / Camera
  * @param styleId   Mustache style ID (e.g. "handlebar")
- * @param userId    Client-generated UUID (from Zustand store)
  */
 export const createJob = async (
   imageUri: string,
   styleId:  string,
-  userId:   string,
 ): Promise<CreateJobResponse> => {
   // Build multipart/form-data payload
   const formData = new FormData();
@@ -47,7 +45,6 @@ export const createJob = async (
   }
 
   formData.append('style_id', styleId);
-  formData.append('user_id',  userId);
 
   const response = await apiClient.post<CreateJobResponse>('/api/jobs', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

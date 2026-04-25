@@ -14,6 +14,8 @@ import { StatusBar } from 'expo-status-bar';
 
 import { RootStackParamList } from './src/types';
 import HomeScreen        from './src/screens/HomeScreen';
+import SignInScreen      from './src/screens/SignInScreen';
+import SignUpScreen      from './src/screens/SignUpScreen';
 import UploadScreen      from './src/screens/UploadScreen';
 import StylePickerScreen from './src/screens/StylePickerScreen';
 import ProcessingScreen  from './src/screens/ProcessingScreen';
@@ -31,8 +33,7 @@ export default function App() {
             initialRouteName="Home"
             screenOptions={{
               headerShown: false,
-              cardStyle:   { backgroundColor: '#f6f4ff' },
-              // Smooth slide transition
+              cardStyle:   { backgroundColor: '#ffffff' },
               cardStyleInterpolator: ({ current, layouts }) => ({
                 cardStyle: {
                   transform: [
@@ -48,6 +49,8 @@ export default function App() {
             }}
           >
             <Stack.Screen name="Home"        component={HomeScreen}        />
+            <Stack.Screen name="SignIn"      component={SignInScreen}      />
+            <Stack.Screen name="SignUp"      component={SignUpScreen}      />
             <Stack.Screen name="Upload"      component={UploadScreen}      />
             <Stack.Screen name="StylePicker" component={StylePickerScreen} />
             <Stack.Screen name="Processing"  component={ProcessingScreen}  />
