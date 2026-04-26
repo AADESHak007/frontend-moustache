@@ -579,17 +579,17 @@ const { width, height } = Dimensions.get('window');
 
 // ─── Responsive helpers ───────────────────────────────────────────────
 const isSmallPhone = width < 375;
-const cardWidth    =
-  isDesktop ? 460 :
-  isTablet  ? 420 :
-  width - S.lg * 2;
+const cardWidth =
+  isDesktop ? 560 :
+    isTablet ? 480 :
+      width - S.lg * 2;
 
 // Preview square: fills the column but never exceeds ~55% of screen height
 const previewSize = Math.min(
   cardWidth,
-  isDesktop ? 440 :
-  isTablet  ? 380 :
-  height * (isSmallPhone ? 0.38 : 0.44),
+  isDesktop ? 520 :
+    isTablet ? 440 :
+      height * (isSmallPhone ? 0.38 : 0.44),
 );
 
 const WEB_COL = Math.min(WEB_MAX_W, width);
@@ -601,34 +601,34 @@ const STEPS = ['Upload', 'Style', 'Result'];
 
 // ─── Source option cards ─────────────────────────────────────────────
 const SOURCES = [
-  { id: 'camera',  icon: '📷', label: 'Take Selfie',     sub: 'Use front camera' },
-  { id: 'gallery', icon: '🖼️',  label: 'From Gallery',   sub: 'Pick from library' },
+  { id: 'camera', icon: '📷', label: 'Take Selfie', sub: 'Use front camera' },
+  { id: 'gallery', icon: '🖼️', label: 'From Gallery', sub: 'Pick from library' },
 ];
 
 export default function UploadScreen() {
   const navigation = useNavigation<UploadNav>();
-  const route      = useRoute<any>();
-  const insets     = useSafeAreaInsets();
+  const route = useRoute<any>();
+  const insets = useSafeAreaInsets();
 
   const setSelectedImageUri = useAppStore((s) => s.setSelectedImageUri);
+  const storeImage = useAppStore((s) => s.selectedImageUri);
 
   const passedImage = route.params?.image;
-  const [localImage, setLocalImage] = useState<string | null>(passedImage || null);
-  const [loading,    setLoading]    = useState(false);
+  const [localImage, setLocalImage] = useState<string | null>(passedImage || storeImage || null);
+  const [loading, setLoading] = useState(false);
 
   // ─── Animations ──────────────────────────────────────────────────
-  const fadeAnim   = useRef(new Animated.Value(0)).current;
-  const slideAnim  = useRef(new Animated.Value(28)).current;
-  const imgScale   = useRef(new Animated.Value(0.92)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(28)).current;
+  const imgScale = useRef(new Animated.Value(0.92)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim,  { toValue: 1, duration: 600, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
       Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
     ]).start();
   }, []);
 
-  // Animate preview in whenever a new image is set
   useEffect(() => {
     if (localImage) {
       imgScale.setValue(0.92);
@@ -637,6 +637,12 @@ export default function UploadScreen() {
       }).start();
     }
   }, [localImage]);
+
+  useEffect(() => {
+    if (passedImage || storeImage) {
+      setLocalImage(passedImage || storeImage);
+    }
+  }, [passedImage, storeImage]);
 
   // ─── Actions ─────────────────────────────────────────────────────
   const pickImage = async () => {
@@ -684,7 +690,7 @@ export default function UploadScreen() {
     <View style={[styles.root, { paddingTop: insets.top }]}>
 
       {/* Ambient washes — same as HomeScreen */}
-      <View style={styles.topWash}    pointerEvents="none" />
+      <View style={styles.topWash} pointerEvents="none" />
       {/* <View style={styles.bottomWash} pointerEvents="none" /> */}
 
       {/* ── HEADER ───────────────────────────────────────────────── */}
@@ -708,7 +714,7 @@ export default function UploadScreen() {
         <View style={styles.stepRow}>
           {STEPS.map((step, i) => {
             const active = i === 0;
-            const done   = false; // step 1 is always current on this screen
+            const done = false; // step 1 is always current on this screen
             return (
               <React.Fragment key={step}>
                 {i > 0 && (
@@ -965,13 +971,13 @@ export default function UploadScreen() {
 // ─── Styles ───────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   root: {
-    flex:            1,
+    flex: 1,
     backgroundColor: C.bg,
     ...(IS_WEB ? { alignItems: 'center' as const } : {}),
   },
 
   // Ambient washes (identical to HomeScreen)
-topWash: {
+  topWash: {
     position: 'absolute',
     top: -WASH_W * 0.3,
     left: '50%',
@@ -983,135 +989,139 @@ topWash: {
     opacity: 0.07,
   },
   bottomWash: {
-    position:        'absolute',
-    bottom:          80,
-    right:           -40,
-    width:           isTablet ? 280 : 200,
-    height:          isTablet ? 280 : 200,
-    borderRadius:    140,
+    position: 'absolute',
+    bottom: 80,
+    right: -40,
+    width: isTablet ? 280 : 200,
+    height: isTablet ? 280 : 200,
+    borderRadius: 140,
     backgroundColor: C.gold,
-    opacity:         0.06,
+    opacity: 0.06,
   },
 
   // ── Header
   header: {
-    flexDirection:     'row',
-    alignItems:        'center',
-    justifyContent:    'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: S.lg,
-    paddingVertical:   S.sm,
-    width:             IS_WEB ? WEB_COL : '100%',
+    paddingVertical: S.sm,
+    width: IS_WEB ? WEB_COL : '100%',
+    alignSelf: 'center',
   },
   backBtn: {
-    width:           isSmallPhone ? 34 : 40,
-    height:          isSmallPhone ? 34 : 40,
-    borderRadius:    isSmallPhone ? 17 : 20,
+    width: isSmallPhone ? 34 : 40,
+    height: isSmallPhone ? 34 : 40,
+    borderRadius: isSmallPhone ? 17 : 20,
     backgroundColor: C.card,
-    justifyContent:  'center',
-    alignItems:      'center',
-    borderWidth:     1,
-    borderColor:     C.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: C.border,
     ...SHADOW.soft,
   },
   backArrow: {
-    fontSize:   isSmallPhone ? 14 : 16,
-    color:      C.textPrimary,
+    fontSize: isSmallPhone ? 14 : 16,
+    color: C.textPrimary,
     lineHeight: isSmallPhone ? 20 : 22,
   },
 
   // Step indicator
   stepRow: {
     flexDirection: 'row',
-    alignItems:    'center',
-    gap:           0,
+    alignItems: 'center',
+    gap: 0,
   },
   stepItem: {
     alignItems: 'center',
-    gap:        5,
+    gap: 5,
   },
   stepDot: {
-    width:           isSmallPhone ? 26 : 30,
-    height:          isSmallPhone ? 26 : 30,
-    borderRadius:    isSmallPhone ? 13 : 15,
+    width: isSmallPhone ? 26 : 30,
+    height: isSmallPhone ? 26 : 30,
+    borderRadius: isSmallPhone ? 13 : 15,
     backgroundColor: C.bgSecondary,
-    borderWidth:     1,
-    borderColor:     C.border,
-    justifyContent:  'center',
-    alignItems:      'center',
-    overflow:        'hidden',
+    borderWidth: 1,
+    borderColor: C.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
   stepDotActive: {
     borderWidth: 0,
     ...SHADOW.glow,
   },
   stepDotGrad: {
-    width:          '100%',
-    height:         '100%',
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
-    alignItems:     'center',
+    alignItems: 'center',
   },
   stepDotNum: {
     fontFamily: 'DMSans_600SemiBold',
-    fontSize:   isSmallPhone ? 11 : 12,
-    color:      C.white,
+    fontSize: isSmallPhone ? 11 : 12,
+    color: C.white,
   },
   stepDotNumInactive: {
     fontFamily: 'DMSans_400Regular',
-    fontSize:   isSmallPhone ? 11 : 12,
-    color:      C.textMuted,
+    fontSize: isSmallPhone ? 11 : 12,
+    color: C.textMuted,
   },
   stepLabel: {
     fontFamily: 'DMSans_400Regular',
-    fontSize:   isSmallPhone ? 9 : 10,
-    color:      C.textMuted,
+    fontSize: isSmallPhone ? 9 : 10,
+    color: C.textMuted,
     letterSpacing: 0.3,
   },
   stepLine: {
-    width:           isSmallPhone ? 20 : 28,
-    height:          1,
+    width: isSmallPhone ? 20 : 28,
+    height: 1,
     backgroundColor: C.border,
     marginHorizontal: 4,
-    marginBottom:    14, // offset to align with dots
+    marginBottom: 14, // offset to align with dots
   },
   stepLineDone: {
     backgroundColor: C.primary,
-    opacity:         0.5,
+    opacity: 0.5,
   },
 
   // ── Scroll
   scrollContent: {
-    flexGrow:          1,
+    flexGrow: 1,
     paddingHorizontal: S.lg,
-    alignItems:        'center',
-    paddingTop:        S.sm,
+    alignItems: 'center',
+    paddingTop: S.sm,
   },
   scrollContentWeb: {
     width: WEB_COL,
+    alignSelf: 'center',
   },
 
   // ── Title block
   titleBlock: {
-    width:          '100%',
-    alignItems:     'center',
+    width: '100%',
+    alignItems: 'center',
     paddingVertical: S.md,
   },
   eyebrowRow: {
     flexDirection: 'row',
-    alignItems:    'center',
-    gap:           10,
-    marginBottom:  S.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: S.sm,
   },
   eyebrowLine: {
-    width:           28,
-    height:          1,
+    width: 28,
+    height: 1,
     backgroundColor: C.primary,
-    opacity:         0.35,
+    opacity: 0.35,
   },
   titleSub: {
     textAlign: 'center',
-    maxWidth:  isSmallPhone ? 230 : 280,
+    maxWidth: isSmallPhone ? 230 : 280,
     marginTop: S.xs,
     lineHeight: 20,
+    alignSelf: 'center',
   },
 
   // ── Preview
@@ -1120,57 +1130,57 @@ topWash: {
     marginTop: S.md,
   },
   previewCard: {
-    borderRadius:    R.xl,
+    borderRadius: R.xl,
     backgroundColor: C.cardSoft,
-    borderWidth:     1.5,
-    borderColor:     C.border,
-    overflow:        'hidden',
+    borderWidth: 1.5,
+    borderColor: C.border,
+    overflow: 'hidden',
     ...SHADOW.card,
   },
   preview: {
-    width:       '100%',
-    height:      '100%',
-    resizeMode:  'cover',
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   previewOverlay: {
-    position:       'absolute',
-    bottom:         0,
-    left:           0,
-    right:          0,
-    height:         isSmallPhone ? 56 : 70,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: isSmallPhone ? 56 : 70,
     justifyContent: 'flex-end',
-    paddingBottom:  S.md,
-    alignItems:     'center',
+    paddingBottom: S.md,
+    alignItems: 'center',
   },
   changeHintPill: {
-    backgroundColor:   'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
     paddingHorizontal: 12,
-    paddingVertical:   6,
-    borderRadius:      R.pill,
-    borderWidth:       1,
-    borderColor:       'rgba(255,255,255,0.2)',
+    paddingVertical: 6,
+    borderRadius: R.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   changeHintText: {
-    fontFamily:    'DMSans_500Medium',
-    fontSize:      10,
-    color:         C.white,
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 10,
+    color: C.white,
     letterSpacing: 1,
   },
 
   // Placeholder (empty state)
   placeholderInner: {
-    flex:           1,
+    flex: 1,
     justifyContent: 'center',
-    alignItems:     'center',
-    padding:        S.lg,
+    alignItems: 'center',
+    padding: S.lg,
     backgroundColor: C.cardSoft,
   },
   placeholderIcon: {
-    width:          isSmallPhone ? 56 : 68,
-    height:         isSmallPhone ? 56 : 68,
-    borderRadius:   isSmallPhone ? 28 : 34,
+    width: isSmallPhone ? 56 : 68,
+    height: isSmallPhone ? 56 : 68,
+    borderRadius: isSmallPhone ? 28 : 34,
     justifyContent: 'center',
-    alignItems:     'center',
+    alignItems: 'center',
     ...SHADOW.glow,
   },
   placeholderEmoji: {
@@ -1178,54 +1188,54 @@ topWash: {
   },
   fmtRow: {
     flexDirection: 'row',
-    gap:           6,
-    marginTop:     S.md,
+    gap: 6,
+    marginTop: S.md,
   },
   fmtPill: {
-    backgroundColor:   C.bgSecondary,
-    borderRadius:      R.sm,
+    backgroundColor: C.bgSecondary,
+    borderRadius: R.sm,
     paddingHorizontal: 9,
-    paddingVertical:   4,
-    borderWidth:       1,
-    borderColor:       C.border,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: C.border,
   },
   fmtText: {
-    fontFamily:    'DMSans_400Regular',
-    fontSize:      10,
-    color:         C.textMuted,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 10,
+    color: C.textMuted,
     letterSpacing: 1,
   },
 
   // ── Source cards
   sourceRow: {
-    flexDirection:  'row',
-    gap:            S.sm,
-    marginTop:      S.lg,
-    alignSelf:      'center',
+    flexDirection: 'row',
+    gap: S.sm,
+    marginTop: S.lg,
+    alignSelf: 'center',
   },
   sourceCard: {
-    flex:            1,
+    flex: 1,
     backgroundColor: C.card,
-    borderRadius:    R.lg,
-    padding:         S.md,
-    alignItems:      'center',
-    borderWidth:     1,
-    borderColor:     C.border,
+    borderRadius: R.lg,
+    padding: S.md,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: C.border,
     ...SHADOW.soft,
   },
   sourceCardSmall: {
-    padding:         S.sm,
+    padding: S.sm,
     paddingVertical: S.sm,
   },
   sourceIconWrap: {
-    width:           isSmallPhone ? 46 : 54,
-    height:          isSmallPhone ? 46 : 54,
-    borderRadius:    isSmallPhone ? 23 : 27,
+    width: isSmallPhone ? 46 : 54,
+    height: isSmallPhone ? 46 : 54,
+    borderRadius: isSmallPhone ? 23 : 27,
     backgroundColor: C.accentSoft,
-    justifyContent:  'center',
-    alignItems:      'center',
-    borderWidth:     1,
-    borderColor:     C.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: C.border,
   },
   sourceEmoji: {
     fontSize: isSmallPhone ? 20 : 24,
@@ -1237,23 +1247,23 @@ topWash: {
   // ── Tips card
   tipsCard: {
     backgroundColor: C.card,
-    borderRadius:    R.xl,
-    padding:         S.lg,
-    marginTop:       S.lg,
-    alignSelf:       'center',
-    borderWidth:     1,
-    borderColor:     C.border,
+    borderRadius: R.xl,
+    padding: S.lg,
+    marginTop: S.lg,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: C.border,
     ...SHADOW.soft,
   },
   tipRow: {
     flexDirection: 'row',
-    alignItems:    'center',
-    marginBottom:  S.sm,
-    gap:           S.sm,
+    alignItems: 'center',
+    marginBottom: S.sm,
+    gap: S.sm,
   },
   tipIcon: {
     fontSize: 16,
-    width:    24,
+    width: 24,
     textAlign: 'center',
   },
 
@@ -1263,16 +1273,16 @@ topWash: {
     marginTop: S.lg,
   },
   ctaBtn: {
-    flexDirection:   'row',
-    alignItems:      'center',
-    justifyContent:  'center',
-    gap:             10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
     paddingVertical: isSmallPhone ? 13 : 17,
-    borderRadius:    R.pill,
+    borderRadius: R.pill,
     ...SHADOW.glow,
   },
   swapBtn: {
-    marginTop:  S.md,
+    marginTop: S.md,
     alignItems: 'center',
   },
 });

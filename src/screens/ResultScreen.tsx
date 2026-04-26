@@ -338,7 +338,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 
 import { RootStackParamList } from '../types';
 import { useAppStore } from '../store/useAppStore';
@@ -352,10 +352,10 @@ type ResultNav = StackNavigationProp<RootStackParamList, 'Result'>;
 const { width, height } = Dimensions.get('window');
 const WASH_W = isDesktop ? width * 0.3 : isTablet ? width * 0.4 : width * 0.6;
 
-const cardWidth = isDesktop ? 520 : isTablet ? 460 : width - S.lg * 2;
-const IMG_SIZE  = Math.min(
+const cardWidth = isDesktop ? 560 : isTablet ? 480 : width - S.lg * 2;
+const IMG_SIZE = Math.min(
   cardWidth,
-  isDesktop ? 480 : isTablet ? 420 : height * 0.44,
+  isDesktop ? 520 : isTablet ? 440 : height * 0.44,
 );
 
 export default function ResultScreen() {
@@ -407,17 +407,39 @@ export default function ResultScreen() {
   // ── Save ──────────────────────────────────────────────────────
   const _onSave = useCallback(async () => {
     if (!outputUrl) return;
+
+    if (IS_WEB) {
+      try {
+        // Simple <a> tag download for web
+        const link = document.createElement('a');
+        link.href = outputUrl;
+        link.download = `mustache_${Date.now()}.jpg`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      } catch (err) {
+        console.error('Web download error:', err);
+        Alert.alert('Error', 'Failed to download image. Try right-clicking and saving.');
+        return;
+      }
+    }
+
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('Permission required', 'Please allow access to save photos.');
       return;
     }
+
     try {
-      const localUri = FileSystem.cacheDirectory + `mustache_${Date.now()}.jpg`;
+      const cacheDir = (FileSystem as any).cacheDirectory ?? '';
+      const localUri = cacheDir + `mustache_${Date.now()}.jpg`;
       const download = await FileSystem.downloadAsync(outputUrl, localUri);
       await MediaLibrary.saveToLibraryAsync(download.uri);
       Alert.alert('Saved! 🎉', 'Your mustache photo is now in your camera roll.');
-    } catch {
+    } catch (err) {
+      console.error('Save error:', err);
       Alert.alert('Error', 'Failed to save photo. Please try again.');
     }
   }, [outputUrl]);
@@ -425,9 +447,21 @@ export default function ResultScreen() {
   // ── Share ─────────────────────────────────────────────────────
   const _onShare = useCallback(async () => {
     if (!outputUrl) return;
+
     try {
-      const localUri = FileSystem.cacheDirectory + `mustache_${Date.now()}.jpg`;
+      if (IS_WEB) {
+        // Direct share URL on web
+        await Share.share({
+          message: 'Check out my AI mustache! Made with AI Mustache Generator',
+          url: outputUrl,
+        });
+        return;
+      }
+
+      const cacheDir = (FileSystem as any).cacheDirectory ?? '';
+      const localUri = cacheDir + `mustache_${Date.now()}.jpg`;
       const download = await FileSystem.downloadAsync(outputUrl, localUri);
+
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(download.uri, {
           mimeType: 'image/jpeg',
@@ -439,7 +473,8 @@ export default function ResultScreen() {
           url: outputUrl,
         });
       }
-    } catch {
+    } catch (err) {
+      console.error('Share error:', err);
       Alert.alert('Error', 'Failed to share photo.');
     }
   }, [outputUrl]);
@@ -495,6 +530,7 @@ export default function ResultScreen() {
         style={{ flex: 1, width: '100%' }}
         contentContainerStyle={[
           styles.scrollContent,
+          IS_WEB && { width: cardWidth, alignSelf: 'center' },
           { paddingBottom: insets.bottom + S.lg },
         ]}
         showsVerticalScrollIndicator={false}
@@ -507,17 +543,16 @@ export default function ResultScreen() {
             { width: cardWidth, opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
           ]}
         >
-          <View>
-            {/* Eyebrow */}
-            <View style={styles.eyebrowRow}>
-              <View style={styles.eyebrowLine} />
-              <Text style={T.label}>Your Result</Text>
-              <View style={styles.eyebrowLine} />
-            </View>
-            <Text style={T.h2}>
-              Looking Sharp ✨
-            </Text>
+          {/* Eyebrow */}
+          <View style={styles.eyebrowRow}>
+            <View style={styles.eyebrowLine} />
+            <Text style={T.label}>Your Result</Text>
+            <View style={styles.eyebrowLine} />
           </View>
+
+          <Text style={[T.h2, { textAlign: 'center' }]}>
+            Looking Sharp ✨
+          </Text>
 
           {selectedStyle && (
             <View style={styles.styleBadge}>
@@ -682,20 +717,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: S.lg,
     paddingTop: S.sm,
     gap: S.lg,
+    paddingBottom: 60,
   },
 
   // ── Header
   header: {
-    flexDirection:  'row',
-    justifyContent: 'space-between',
-    alignItems:     'flex-end',
-    paddingTop:     S.sm,
+    alignItems: 'center',
+    paddingTop: S.sm,
+    gap: S.xs,
   },
   eyebrowRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 10,
-    marginBottom: S.xs,
+    marginBottom: 2,
   },
   eyebrowLine: {
     width: 22,
@@ -721,13 +757,13 @@ const styles = StyleSheet.create({
   imageWrapper: {
     alignSelf: 'center',
     position: 'relative',
+    ...SHADOW.card,
   },
   imageCard: {
     borderRadius: R.xl,
     overflow: 'hidden',
     borderWidth: 1.5,
     borderColor: C.borderStrong,
-    ...SHADOW.card,
   },
   resultImage: {
     width: '100%',
@@ -799,7 +835,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: S.sm,
-    paddingVertical: 17,
+    paddingVertical: isDesktop ? 14 : 17,
   },
   actionIconLg: {
     fontSize: 20,
