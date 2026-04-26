@@ -518,7 +518,7 @@ export default function StylePickerScreen() {
       <Animated.View
         style={[
           styles.header,
-          IS_WEB && { width: WEB_COL },
+          IS_WEB && { width: WEB_COL, alignSelf: 'center' },
           { opacity: fadeAnim },
         ]}
       >
@@ -579,7 +579,7 @@ export default function StylePickerScreen() {
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
-          IS_WEB && { width: WEB_COL },
+          IS_WEB && { width: WEB_COL, alignSelf: 'center' },
           { paddingBottom: bottomPad },
         ]}
         showsVerticalScrollIndicator={false}
@@ -899,7 +899,11 @@ const styles = StyleSheet.create({
     paddingVertical: S.md,
   },
   eyebrowRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: S.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: S.sm,
   },
   eyebrowLine: {
     width: 28, height: 1, backgroundColor: C.primary, opacity: 0.35,
@@ -908,8 +912,11 @@ const styles = StyleSheet.create({
     color: C.primary, fontFamily: 'PlayfairDisplay_700Bold', fontStyle: 'italic',
   },
   titleSub: {
-    textAlign: 'center', maxWidth: 280,
-    marginTop: S.xs, lineHeight: 20,
+    textAlign: 'center',
+    maxWidth: 280,
+    marginTop: S.xs,
+    lineHeight: 20,
+    alignSelf: 'center',
   },
 
   // ── Preview panel

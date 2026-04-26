@@ -412,15 +412,25 @@ export default function SignUpScreen() {
       const response = await authApi.signUp(email, password);
       if (response.access_token) {
         setAuth(response.access_token, response.user);
-        Alert.alert('Success', 'Account created successfully!', [
-          { text: "Let's Go", onPress: () => navigation.replace('Home') },
-        ]);
+        if (Platform.OS === 'web') {
+          window.alert('Account created successfully!');
+          navigation.replace('Home');
+        } else {
+          Alert.alert('Success', 'Account created successfully!', [
+            { text: "Let's Go", onPress: () => navigation.replace('Home') },
+          ]);
+        }
       } else {
-        Alert.alert(
-          'Check Your Inbox',
-          'We have sent a verification link to your email. Please confirm it to sign in.',
-          [{ text: 'Back to Login', onPress: () => navigation.navigate('SignIn') }]
-        );
+        if (Platform.OS === 'web') {
+          window.alert('We have sent a verification link to your email. Please confirm it to sign in.');
+          navigation.navigate('SignIn');
+        } else {
+          Alert.alert(
+            'Check Your Inbox',
+            'We have sent a verification link to your email. Please confirm it to sign in.',
+            [{ text: 'Back to Login', onPress: () => navigation.navigate('SignIn') }]
+          );
+        }
       }
     } catch (error: any) {
       Alert.alert('Registration Failed', error.message || 'Something went wrong');

@@ -433,6 +433,7 @@ export default function ProcessingScreen() {
         style={{ flex: 1, width: '100%' }}
         contentContainerStyle={[
           styles.scrollContent,
+          IS_WEB && { width: cardWidth, alignSelf: 'center' },
           { paddingBottom: insets.bottom + S.lg },
         ]}
         showsVerticalScrollIndicator={false}

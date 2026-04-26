@@ -1258,7 +1258,7 @@ const FEATURES = [
 
 export default function HomeScreen() {
   const navigation = useNavigation<HomeNav>();
-  const { token, user, logout } = useAppStore();
+  const { token, user, logout, setSelectedImageUri } = useAppStore();
   const insets = useSafeAreaInsets();
   const [image, setImage] = useState<string | null>(null);
 
@@ -1321,6 +1321,7 @@ export default function HomeScreen() {
     if (!result.canceled) {
       const uri = result.assets[0].uri;
       setImage(uri);
+      setSelectedImageUri(uri);
       navigation.navigate('Upload');
     }
   };
