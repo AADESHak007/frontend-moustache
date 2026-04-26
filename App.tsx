@@ -26,14 +26,14 @@ const Stack = createStackNavigator<RootStackParamList>();
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
+      <SafeAreaProvider style={{ flex: 1 }}>
         <StatusBar style="dark" />
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="Home"
             screenOptions={{
               headerShown: false,
-              cardStyle:   { backgroundColor: '#ffffff' },
+              cardStyle:   { flex: 1, backgroundColor: '#ffffff' },
               cardStyleInterpolator: ({ current, layouts }) => ({
                 cardStyle: {
                   transform: [
