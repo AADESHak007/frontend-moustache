@@ -49,7 +49,9 @@ apiClient.interceptors.response.use(
     if (__DEV__) {
       console.error(`[API ✗] ${message}`);
     }
-    return Promise.reject(new Error(message));
+    const wrapped = new Error(message) as Error & { status?: number };
+    wrapped.status = error.response?.status;
+    return Promise.reject(wrapped);
   }
 );
 

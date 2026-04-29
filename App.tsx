@@ -20,6 +20,7 @@ import UploadScreen      from './src/screens/UploadScreen';
 import StylePickerScreen from './src/screens/StylePickerScreen';
 import ProcessingScreen  from './src/screens/ProcessingScreen';
 import ResultScreen      from './src/screens/ResultScreen';
+import PaywallScreen     from './src/screens/PaywallScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -55,6 +56,7 @@ export default function App() {
             <Stack.Screen name="StylePicker" component={StylePickerScreen} />
             <Stack.Screen name="Processing"  component={ProcessingScreen}  />
             <Stack.Screen name="Result"      component={ResultScreen}      />
+            <Stack.Screen name="Paywall"     component={PaywallScreen}     />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

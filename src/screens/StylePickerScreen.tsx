@@ -493,6 +493,11 @@ export default function StylePickerScreen() {
       setCurrentJob({ job_id: job.job_id, status: job.status });
       navigation.navigate('Processing');
     } catch (err: any) {
+      // 402 = no credits → straight to paywall, no in-screen error needed.
+      if (err?.status === 402) {
+        navigation.navigate('Paywall', { reason: 'out_of_credits' });
+        return;
+      }
       setErrorMessage(err.message ?? 'Failed to start job. Please try again.');
     } finally {
       setSubmitting(false);

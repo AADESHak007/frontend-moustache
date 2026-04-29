@@ -24,6 +24,10 @@ interface AppState {
   setAuth: (token: string, user: UserProfile) => void;
   logout:  () => void;
 
+  // Credits
+  credits:    number | null;
+  setCredits: (n: number) => void;
+
   // Image
   selectedImageUri: string | null;
   setSelectedImageUri: (uri: string | null) => void;
@@ -53,7 +57,11 @@ export const useAppStore = create<AppState>()(
       token: null,
       user:  null,
       setAuth: (token, user) => set({ token, user }),
-      logout:  () => set({ token: null, user: null }),
+      logout:  () => set({ token: null, user: null, credits: null }),
+
+      // Credits
+      credits:    null,
+      setCredits: (n) => set({ credits: n }),
 
       // Image
       selectedImageUri:    null,
@@ -85,9 +93,10 @@ export const useAppStore = create<AppState>()(
       name: 'mustache-app-storage',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
-        token:  state.token,
-        user:   state.user,
-        styles: state.styles,
+        token:   state.token,
+        user:    state.user,
+        styles:  state.styles,
+        credits: state.credits,
       }),
     }
   )
