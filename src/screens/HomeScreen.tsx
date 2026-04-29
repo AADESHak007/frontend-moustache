@@ -1206,6 +1206,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { useAppStore } from '../store/useAppStore';
 import { RootStackParamList } from '../types';
+import { billingApi } from '../api/billing';
 import {
   C, L, T, S, R, SHADOW, BTN,
   IS_WEB, isDesktop, isTablet, WEB_MAX_W,
@@ -1259,8 +1260,18 @@ const FEATURES = [
 export default function HomeScreen() {
   const navigation = useNavigation<HomeNav>();
   const { token, user, logout } = useAppStore();
+  const credits     = useAppStore((s) => s.credits);
+  const setCredits  = useAppStore((s) => s.setCredits);
   const insets = useSafeAreaInsets();
   const [image, setImage] = useState<string | null>(null);
+
+  // Refresh credit balance whenever Home re-mounts and we have a token.
+  useEffect(() => {
+    if (!token) return;
+    billingApi.getCredits()
+      .then((r) => setCredits(r.balance))
+      .catch(() => { /* non-fatal — UI shows the cached value */ });
+  }, [token]);
 
   // ─── Animations ──────────────────────────────────────────────────
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -1348,9 +1359,31 @@ export default function HomeScreen() {
               {user?.email}
             </Text>
           </View>
-          <TouchableOpacity onPress={logout} activeOpacity={0.6}>
-            <Text style={[T.label, { color: C.error }]}>Logout</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Paywall')}
+              activeOpacity={0.7}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 6,
+                backgroundColor: C.card,
+                borderWidth: 1,
+                borderColor: C.border,
+                paddingHorizontal: S.sm,
+                paddingVertical: 5,
+                borderRadius: R.pill,
+              }}
+            >
+              <Text style={{ fontSize: 12 }}>✨</Text>
+              <Text style={[T.caption, { color: C.textPrimary }]}>
+                {credits == null ? 'Plans' : `${credits} credit${credits === 1 ? '' : 's'}`}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={logout} activeOpacity={0.6}>
+              <Text style={[T.label, { color: C.error }]}>Logout</Text>
+            </TouchableOpacity>
+          </View>
         </Animated.View>
       )}
 

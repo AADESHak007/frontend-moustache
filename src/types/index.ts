@@ -49,6 +49,51 @@ export interface AuthResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
+export interface Plan {
+  id:           string;        // 'free' | 'starter' | 'pro' | 'studio'
+  name:         string;
+  price_inr:    number;
+  amount_paise: number;
+  credits:      number;
+  tagline:      string;
+  features:     string[];
+  purchasable:  boolean;
+  popular?:     boolean;
+  currency:     'INR';
+}
+
+export interface PlansResponse {
+  plans:    Plan[];
+  currency: 'INR';
+}
+
+export interface CreditsResponse {
+  balance: number;
+}
+
+export interface CreateOrderResponse {
+  order_id:     string;
+  amount_paise: number;
+  currency:     'INR';
+  key_id:       string;
+  plan:         Plan;
+}
+
+export interface VerifyOrderRequest {
+  razorpay_order_id:   string;
+  razorpay_payment_id: string;
+  razorpay_signature:  string;
+}
+
+export interface VerifyOrderResponse {
+  success:        boolean;
+  credits_added:  number;
+  credits_total:  number;
+}
+
+// ---------------------------------------------------------------------------
 // Navigation
 // ---------------------------------------------------------------------------
 export type RootStackParamList = {
@@ -59,4 +104,5 @@ export type RootStackParamList = {
   StylePicker:  undefined;
   Processing:   undefined;
   Result:       undefined;
+  Paywall:      { reason?: 'out_of_credits' | 'browse' } | undefined;
 };
